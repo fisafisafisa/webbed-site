@@ -1,0 +1,301 @@
+/* ---- Fonts, self-hosted in fonts/ (both OFL licensed) ---- */
+
+/* Courier Prime, for emphasis only: headings and the site name. */
+@font-face {
+  font-family: "Courier Prime";
+  src: url("fonts/courier-prime-bold.woff2") format("woff2");
+  font-weight: 700;
+}
+
+/* The ornament ★, cut from Adwaita Mono.
+   Without it each browser borrows ★ from a different system font, and its
+   size varies a lot. It only covers ★. */
+@font-face {
+  font-family: "Ornament";
+  src: url("fonts/adwaita-mono-star.woff2") format("woff2");
+  font-weight: 100 900; /* one glyph for every weight, no faux bold */
+  unicode-range: U+2605;
+}
+
+/* ---- Root ---- */
+
+:root {
+  --text: #262626;
+  --muted: #7a7a7a;
+  --accent: #0fa10f;
+  --rule: #c6c6c6;
+  --bg: #efefef;
+  --highlight: #ff841f;
+
+  /* The page font is the system's own monospace, named per platform so none
+     falls back to thin Courier: Linux, then Apple, then Windows */
+  --font: "Ornament", "Liberation Mono", Menlo, Consolas, monospace;
+  --font-emphasis: "Ornament", "Courier Prime", monospace;
+
+  --ornament: "★";
+}
+
+/* ---- Base ---- */
+
+* { box-sizing: border-box; }
+
+body {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+  font-family: var(--font);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+}
+
+a {
+  font-weight: 700;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--bg);
+  background: var(--accent);
+}
+
+/* Code keeps the page's font (browsers swap in a smaller one), and wraps
+   only between words (code-words in pollen.rkt puts each in a span) */
+code { font: inherit; }
+code span { white-space: nowrap; }
+
+::selection {
+  color: #fff;
+  background: var(--highlight);
+}
+
+/* ---- Headings ---- */
+
+/* Courier for titles and the site name in the header */
+h1, h2, h3,
+header .home { font-family: var(--font-emphasis); }
+
+/* Uppercase for page and section titles, and the site name, only */
+h1, h2,
+header .home {
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+h1 { font-size: 1.6rem;  margin: 0 0 0.5rem; }
+h2 { font-size: 1.15rem; margin: 3rem 0 0; }
+h3 { font-size: 1.1rem;  margin: 0; }
+
+h2::before {
+  content: var(--ornament) "  ";
+  font-size: 0.85em;
+  color: var(--accent);
+}
+
+/* ---- Header ---- */
+
+header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem 1.5rem;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--rule);
+  font-size: 0.9rem;
+}
+
+header .home {
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
+nav { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; }
+nav a { color: var(--muted); }
+
+/* The current page's link */
+header [aria-current="page"] { color: var(--accent); }
+
+header .home[aria-current="page"]::before {
+  content: var(--ornament);
+  font-size: 1.45rem;
+  line-height: 0;
+}
+
+header a:hover { color: var(--bg); }
+
+/* ---- Home ---- */
+
+/* ◊intro: name and contact in the left column,
+   the photo on the right, as tall as they are */
+.intro {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto 1fr; /* spare height below the contact, not between */
+  align-items: start;
+  column-gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.intro > * { grid-column: 1; }
+
+.intro > .portrait {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  margin: 0;
+}
+
+.portrait img {
+  display: block;
+  width: 10rem;
+  height: 10rem;
+  border-radius: 5%;
+  object-fit: cover;
+}
+
+/* Phones: a smaller photo beside the name only (set tighter, as it wraps),
+   and the contact full width underneath */
+@media (max-width: 32rem) {
+  .intro > * { grid-column: 1 / -1; }
+  .intro > h1 {
+    grid-column: 1;
+    align-self: center;
+    line-height: 1.25;
+  }
+  .intro > .portrait { grid-row: 1; }
+  .portrait img { width: 6rem; height: 6rem; }
+}
+
+/* ◊callout: a line set off by an accent bar */
+.callout {
+  padding: 0.3rem 0 0.3rem 0.9rem;
+  border-left: 3px solid var(--accent);
+}
+
+.interests {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* ---- Entries ---- */
+
+.entries { margin-top: 1.5rem; }
+
+/* A dashed rule between entries */
+.entry + .entry {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px dashed var(--rule);
+}
+
+/* Heading row: title left, date right; a long title wraps instead of
+   pushing the date down. On phones the date goes under the title. */
+.entry-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+@media (max-width: 32rem) {
+  .entry-head { flex-direction: column; gap: 0; }
+}
+
+.entry .meta {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+/* Small bold caps: entry dates, and labels like THESIS or ADVISOR */
+.entry .date,
+.labelled dt {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.entry .date { white-space: nowrap; }
+
+/* Links after an entry's title: the body font, like links elsewhere */
+.title-links {
+  font-family: var(--font);
+  font-size: 1.05rem;
+}
+
+/* A paper's venue: styled like the links, but grey */
+.venue {
+  font-weight: 700;
+  color: var(--muted);
+}
+
+/* Bullets, or the paragraph right under the meta line, close to it */
+.entry ul,
+.entry .meta + p { margin: 0.5rem 0 0; }
+
+.entry li::marker {
+  content: var(--ornament) " ";
+  color: var(--muted);
+}
+
+/* Label/value rows: thesis and advisor, contact, news */
+.labelled {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.2rem 1rem;
+  align-items: baseline;
+  margin: 0.75rem 0 0;
+}
+
+/* A value too long for its row (an email on a small phone) may break */
+.labelled dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+/* ---- Footer ---- */
+
+footer {
+  margin-top: 4rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* ---- Background stars ---- */
+
+body::before,
+body::after {
+  content: var(--ornament);
+  position: fixed;
+  z-index: -1;
+  font-family: var(--font-emphasis); /* self-hosted line metrics: same placement everywhere */
+  font-size: 20rem;
+  line-height: 1;
+  color: var(--accent);
+  opacity: 0.13;
+}
+
+body::before { top: -4rem;    left: -2rem; rotate: -14deg; }
+body::after  { bottom: -7rem; right: -2rem; rotate: 11deg; }
+
+/* For narrow screens only the bottom star stays,
+   smaller and fixed at the footer */
+@media (max-width: 60rem) {
+  body { position: relative; }
+
+  body::before { content: none; }
+
+  body::after {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    font-size: 8rem;
+  }
+}
