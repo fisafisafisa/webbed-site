@@ -119,10 +119,13 @@ nav a { color: var(--muted); }
 /* The current page's link */
 header [aria-current="page"] { color: var(--accent); }
 
+/* The star is bigger than the link's line, so the lowering puts it in the
+   middle of the hover highlight */
 header .home[aria-current="page"]::before {
   content: var(--ornament);
   font-size: 1.45rem;
   line-height: 0;
+  vertical-align: -0.23em;
 }
 
 header a:hover { color: var(--bg); }
